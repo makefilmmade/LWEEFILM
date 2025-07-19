@@ -963,26 +963,24 @@
 </head>
 <body>
     <header class="header">
-        <nav class="nav">
-            <div class="nav-left">
-               <a class="logo" onclick="showPage('home')">
-  <img src="images/logo.png" alt="로고" style="height: 50x; vertical-align: middle; margin-top: 20px;">
-</a>
-                <ul class="nav-menu">
-                    <li><a class="nav-link" onclick="showSection('about')">About</a></li>
-                    <li><a class="nav-link" onclick="showSection('movies')">Films</a></li>
-                    <li><a class="nav-link" onclick="showSection('coming-soon')">Coming Soon</a></li>
-                    <li><a class="nav-link" onclick="showSection('watch-now')">Watch Now</a></li>
-                    <li><a class="nav-link" onclick="showSection('awards')">Award Winners</a></li>
-                    <li><a class="nav-link" onclick="showSection('shop')">Shop</a></li>
-                </ul>
-            </div>
-            <button class="cart-btn" onclick="toggleCart()">
-                Cart
-                <span class="cart-count" id="cart-count">0</span>
-            </button>
-        </nav>
-    </header>
+  <nav class="nav" style="display: flex; align-items: center; justify-content: space-between; height: 60px;">
+    <div class="nav-left" style="display: flex; align-items: center; height: 100%;">
+      <a class="logo" onclick="showPage('home')" style="display: flex; align-items: center; height: 100%;">
+        <img src="images/logo.png" alt="로고" style="height: 84px; vertical-align: middle; margin-top: 6px;">
+      </a>
+      <ul class="nav-menu" style="display: flex; align-items: center; height: 100%;">
+        <li><a class="nav-link" onclick="showSection('about')" style="display: flex; align-items: center; height: 100%;">About</a></li>
+        <li><a class="nav-link" onclick="showSection('movies')" style="display: flex; align-items: center; height: 100%;">Films</a></li>
+        <li><a class="nav-link" onclick="showSection('coming-soon')" style="display: flex; align-items: center; height: 100%;">Coming Soon</a></li>
+        <li><a class="nav-link" onclick="showSection('watch-now')" style="display: flex; align-items: center; height: 100%;">Watch Now</a></li>
+        <li><a class="nav-link" onclick="showSection('awards')" style="display: flex; align-items: center; height: 100%;">Award Winners</a></li>
+        <li><a class="nav-link" onclick="showSection('shop')" style="display: flex; align-items: center; height: 100%;">Shop</a></li>
+      </ul>
+    </div>
+    <button class="cart-btn" onclick="toggleCart()">Cart <span class="cart-count" id="cart-count">0</span></button>
+  </nav>
+</header>
+
 
     <div id="home" class="page active">
         <section class="hero-slider">
