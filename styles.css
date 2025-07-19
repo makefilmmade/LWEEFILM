@@ -746,3 +746,10 @@ h1, h2, h3, h4, h5, h6 {
         color: #cccccc;
     }
 }
+body, p, a, span, h1, h2, h3, h4, h5, h6,
+.nav-link, .section-title, .section-subtitle,
+.movie-title, .product-name, .award-title,
+.product-price, .movie-year, .product-currency,
+.cart-item-name, .cart-item-price, .footer-text {
+    color: #00A2FF !important;
+}
