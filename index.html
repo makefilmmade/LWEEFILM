@@ -962,24 +962,28 @@
     </style>
 </head>
 <body>
-   <header class="header">
-  <nav class="nav" style="display: flex; align-items: center; justify-content: space-between; height: 72px; padding: 0 20px;">
+  <header class="header" style="background: #252525; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+  <nav class="nav" style="display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 20px;">
     <div class="nav-left" style="display: flex; align-items: center; height: 100%;">
       <a class="logo" onclick="showPage('home')" style="display: flex; align-items: center; height: 100%;">
-        <img src="images/logo.png" alt="로고" style="height: 60px; vertical-align: middle; margin-top: 0;">
+        <img src="images/logo.png" alt="로고" style="height: 50px; vertical-align: middle;">
       </a>
       <ul class="nav-menu" style="display: flex; align-items: center; height: 100%; margin-left: 40px; gap: 20px;">
-        <li><a class="nav-link" onclick="showSection('about')" style="display: flex; align-items: center; height: 100%; font-size: 14px;">About</a></li>
-        <li><a class="nav-link" onclick="showSection('movies')" style="display: flex; align-items: center; height: 100%; font-size: 14px;">Films</a></li>
-        <li><a class="nav-link" onclick="showSection('coming-soon')" style="display: flex; align-items: center; height: 100%; font-size: 14px;">Coming Soon</a></li>
-        <li><a class="nav-link" onclick="showSection('watch-now')" style="display: flex; align-items: center; height: 100%; font-size: 14px;">Watch Now</a></li>
-        <li><a class="nav-link" onclick="showSection('awards')" style="display: flex; align-items: center; height: 100%; font-size: 14px;">Award Winners</a></li>
-        <li><a class="nav-link" onclick="showSection('shop')" style="display: flex; align-items: center; height: 100%; font-size: 14px;">Shop</a></li>
+        <li><a class="nav-link" onclick="showSection('about')" style="display: flex; align-items: center; height: 100%; font-size: 14px; color: #00A2FF;">About</a></li>
+        <li><a class="nav-link" onclick="showSection('movies')" style="display: flex; align-items: center; height: 100%; font-size: 14px; color: #00A2FF;">Films</a></li>
+        <li><a class="nav-link" onclick="showSection('coming-soon')" style="display: flex; align-items: center; height: 100%; font-size: 14px; color: #00A2FF;">Coming Soon</a></li>
+        <li><a class="nav-link" onclick="showSection('watch-now')" style="display: flex; align-items: center; height: 100%; font-size: 14px; color: #00A2FF;">Watch Now</a></li>
+        <li><a class="nav-link" onclick="showSection('awards')" style="display: flex; align-items: center; height: 100%; font-size: 14px; color: #00A2FF;">Award Winners</a></li>
+        <li><a class="nav-link" onclick="showSection('shop')" style="display: flex; align-items: center; height: 100%; font-size: 14px; color: #00A2FF;">Shop</a></li>
       </ul>
     </div>
-    <button class="cart-btn" onclick="toggleCart()">Cart <span class="cart-count" id="cart-count">0</span></button>
+    <button class="cart-btn" onclick="toggleCart()" style="border: 1px solid #00A2FF; color: #00A2FF; background: none; padding: 8px 16px; font-size: 11px; font-weight: 600; text-transform: uppercase; cursor: pointer; position: relative;">
+      Cart
+      <span class="cart-count" id="cart-count" style="position: absolute; top: -8px; right: -8px; background: #ff0000; color: #ffffff; border-radius: 50%; width: 20px; height: 20px; font-size: 10px; display: flex; align-items: center; justify-content: center; font-weight: 700;">0</span>
+    </button>
   </nav>
 </header>
+
 
 
     <div id="home" class="page active">
@@ -1031,35 +1035,30 @@
         </section>
 
         <main class="main-content">
-            <section class="about-section" id="about">
-                <div class="about-content">
-                    <h2 class="about-title">LWEE FILM</h2>
-                    <p class="about-subtitle">
-                        "Crafting Emotion in Motion"
-                    </p>
-                    <div class="about-description">
-                        <p> LWEE FILM은 장면 속 감정을 정제하고,
-                        편집과 촬영을 통해 이야기에 리듬을 부여하는 영상 예술 스튜디오입니다.</p>
-                        
-                        <p>편집,촬영,ai를 활용한 다양한 작업물을 선보입니다.</p>
-                    </div>
-                    
-                    <div class="about-stats">
-                        <div class="stat-item">
-                            <div class="stat-number">15+</div>
-                            <div class="stat-label">제작 작품 수</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">8</div>
-                            <div class="stat-label">국제 영화제 수상</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-number">50K+</div>
-                            <div class="stat-label">전 세계 관객</div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+            <section class="about-section" id="about" style="background: url('images/about-bg.jpg') center/cover no-repeat;">
+  <div class="about-content">
+    <h2 class="about-title" style="color: #00A2FF;">LWEE FILM</h2>
+    <p class="about-subtitle" style="color: #00A2FF;">"Crafting Emotion in Motion"</p>
+    <div class="about-description">
+      <p style="color: #00A2FF;">LWEE FILM</p>
+      <p style="color: #FFFFFF;">영상의 리듬감은 뤼필름이 가장 중요하게 생각하는 핵심 요소입니다.</p>
+    </div>
+    <div class="about-stats">
+      <div class="stat-item">
+        <div class="stat-number" style="color: #00A2FF;">CONTENTS</div>
+        <div class="stat-label" style="color: #FFFFFF;">다양한 컨텐츠</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" style="color: #00A2FF;">EdITING</div>
+        <div class="stat-label" style="color: #FFFFFF;">편집</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" style="color: #00A2FF;">EDITING+A.I</div>
+        <div class="stat-label" style="color: #FFFFFF;">A.I</div>
+      </div>
+    </div>
+  </div>
+</section>
 
             <section class="content-section" id="shop">
                 <div class="section-header">
