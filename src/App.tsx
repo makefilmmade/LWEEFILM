@@ -1,156 +1,55 @@
-import React, { useEffect, useRef, useState } from "react";
+// src/App.tsx
+import React from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { HashRouter, Routes, Route } from "react-router-dom";
 
-type Props = {
-  src: string;          // public/ 기준 또는 절대 URL
-  poster?: string;
-  showOnceKey?: string; // undefined면 매번 재생
-  minShowMs?: number;
-  fadeMs?: number;
-};
+import Index from "./pages/Index";
+import About from "./pages/About";
+import Latest from "./pages/Latest";
+import Partners from "./pages/Partners";
+import Works from "./pages/Works";
+import WorkDetail from "./pages/WorkDetail";
+import Contact from "./pages/Contact";
+import NotFound from "./pages/NotFound";
 
-export default function IntroGate({
-  src,
-  poster,
-  showOnceKey = "introSeen_v1",
-  minShowMs = 1200,
-  fadeMs = 600,
-}: Props) {
-  const [hidden, setHidden] = useState(() =>
-    showOnceKey ? !!localStorage.getItem(showOnceKey) : false
-  );
-  const [fading, setFading] = useState(false);
-  const [needTap, setNeedTap] = useState(false);
-  const [err, setErr] = useState<string | null>(null);
-  const [resolvedSrc, setResolvedSrc] = useState<string>("");
+import Footer from "@/components/layout/Footer";
+import IntroGate from "@/components/IntroGate";
 
-  const start = useRef<number>(Date.now());
-  const videoRef = useRef<HTMLVideoElement>(null);
+const queryClient = new QueryClient();
 
-  // BASE_URL 적용 + 한글/공백 경로 안전 처리
-  const withBase = (p?: string) =>
-    !p
-      ? ""
-      : encodeURI(
-          /^(https?:)?\/\//.test(p) || p.startsWith("data:")
-            ? p
-            : `${import.meta.env.BASE_URL}${p.replace(/^\/+/, "")}`
-        );
-
-  const endIntro = () => {
-    const elapsed = Date.now() - start.current;
-    const rest = Math.max(0, minShowMs - elapsed);
-    setTimeout(() => {
-      setFading(true);
-      setTimeout(() => {
-        if (showOnceKey) localStorage.setItem(showOnceKey, "1");
-        setHidden(true);
-        document.documentElement.classList.remove("overflow-hidden");
-        document.body.classList.remove("overflow-hidden");
-      }, fadeMs);
-    }, rest);
-  };
-
-  useEffect(() => {
-    if (hidden) return;
-    document.documentElement.classList.add("overflow-hidden");
-    document.body.classList.add("overflow-hidden");
-
-    const v = videoRef.current!;
-    v.muted = true;
-    (v as any).playsInline = true;
-
-    const tryPlay = () => {
-      v.play().then(() => setNeedTap(false)).catch(() => setNeedTap(true));
-    };
-
-    const onCanPlay = () => { if (v.paused) tryPlay(); };
-    const onEnded = () => endIntro();
-    const onError = () => setErr("영상 로드 실패 (경로/대소문자/코덱 확인)");
-
-    tryPlay();
-
-    v.addEventListener("canplay", onCanPlay);
-    v.addEventListener("ended", onEnded);
-    v.addEventListener("error", onError);
-
-    const t = setTimeout(() => { if (!err) setNeedTap(true); }, 12000);
-
-    return () => {
-      clearTimeout(t);
-      v.removeEventListener("canplay", onCanPlay);
-      v.removeEventListener("ended", onEnded);
-      v.removeEventListener("error", onError);
-      document.documentElement.classList.remove("overflow-hidden");
-      document.body.classList.remove("overflow-hidden");
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hidden, minShowMs, fadeMs]);
-
-  useEffect(() => {
-    setResolvedSrc(withBase(src));
-  }, [src]);
-
-  if (hidden) return null;
-
+export default function App() {
   return (
-    <div
-      className={`fixed inset-0 z-[9999] bg-black transition-opacity ${
-        fading ? "opacity-0 pointer-events-none" : "opacity-100"
-      }`}
-    >
-      <video
-        ref={videoRef}
-        className="w-full h-full object-cover"
-        poster={withBase(poster)}
-        autoPlay
-        muted
-        playsInline
-        preload="auto"
-      >
-        {/* iOS/사파리 호환을 위해 source+type 명시 */}
-        <source src={resolvedSrc} type="video/mp4" />
-      </video>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <HashRouter>
+          {/* 인트로: public/intro/Intro.mp4 업로드 필요 */}
+          <IntroGate
+            src="intro/Intro.mp4"
+            poster="intro/poster.jpg"
+            showOnceKey={undefined}   // 새로고침마다 재생
+            minShowMs={1200}
+            fadeMs={600}
+          />
 
-      {/* 안내/버튼/디버그 */}
-      <div className="absolute inset-0 flex items-end justify-between p-4">
-        <div className="text-xs text-white/70 max-w-[70%]">
-          {err ? (
-            <>
-              <div className="mb-1 text-red-300">❌ {err}</div>
-              <div>요청 URL: <code>{resolvedSrc}</code></div>
-              <a
-                className="underline"
-                href={resolvedSrc}
-                target="_blank"
-                rel="noreferrer"
-              >
-                원본 열기(직접 재생 테스트)
-              </a>
-            </>
-          ) : needTap ? (
-            <div>자동재생이 차단되어 있습니다. 우측 버튼을 눌러 시작하세요.</div>
-          ) : null}
-        </div>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/latest" element={<Latest />} />
+            <Route path="/partners" element={<Partners />} />
+            <Route path="/works" element={<Works />} />
+            <Route path="/works/:id" element={<WorkDetail />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
 
-        <div className="flex gap-2">
-          {needTap && !err && (
-            <button
-              onClick={() =>
-                videoRef.current?.play().then(()=>setNeedTap(false)).catch(()=>setNeedTap(true))
-              }
-              className="rounded-full border border-white/40 px-4 py-2 text-white/90 text-sm bg-black/40 backdrop-blur hover:bg-black/60"
-            >
-              Tap to start
-            </button>
-          )}
-          <button
-            onClick={endIntro}
-            className="rounded-full border border-white/40 px-3 py-1 text-white/90 text-sm bg-black/40 backdrop-blur hover:bg-black/60"
-          >
-            Skip
-          </button>
-        </div>
-      </div>
-    </div>
+          <Footer />
+        </HashRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
   );
 }
