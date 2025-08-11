@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta http-equiv="refresh" content="0; url=/LWEEFILM/" />
-<script>
-  sessionStorage.redirect = location.pathname + location.search + location.hash;
-  location.replace("/LWEEFILM/");
-</script>
+    <meta charset="utf-8" />
+    <title>Redirecting…</title>
+    <script>
+      // 1) 404로 들어온 원래 경로를 보관
+      sessionStorage.redirect = location.pathname + location.search + location.hash;
+      // 2) 프로젝트 페이지 루트로 이동 (레포명과 대/소문자 동일)
+      location.replace("/LWEEFILM/");
+    </script>
   </head>
   <body></body>
 </html>
