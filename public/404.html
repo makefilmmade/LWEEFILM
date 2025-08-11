@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8" />
-    <title>Redirecting…</title>
-    <script>
-      // 깊은 경로로 들어왔을 때 원래 경로를 복원하기 위한 기록
-      sessionStorage.redirect = location.pathname + location.search + location.hash;
-      // 프로젝트 페이지 루트로 이동 (레포명과 대/소문자 동일)
-      window.location.href = "/LWEEFILM/";
-    </script>
+    <meta http-equiv="refresh" content="0; url=/LWEEFILM/" />
+<script>
+  sessionStorage.redirect = location.pathname + location.search + location.hash;
+  location.replace("/LWEEFILM/");
+</script>
   </head>
   <body></body>
 </html>
