@@ -4,9 +4,9 @@
     <meta charset="utf-8" />
     <title>Redirecting…</title>
     <script>
-      // 1) 404로 들어온 원래 경로를 보관
+      // 404로 들어온 원래 경로를 보관 후 프로젝트 루트로 이동
       sessionStorage.redirect = location.pathname + location.search + location.hash;
-  location.replace("/LWEEFILM/"); 
+      location.replace("/LWEEFILM/");
     </script>
   </head>
   <body></body>
