@@ -2,8 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
-// 필요하면 전역 스타일도 같이
-// import "./index.css";
+// import "./index.css";  // 있으면 유지
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
