@@ -1,7 +1,14 @@
-name: Deploy
+name: Deploy Vite to GitHub Pages
+
 on:
   push:
     branches: [ main ]
+
+# ⬇⬇⬇ 이 부분이 핵심 (권한 추가)
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   build:
@@ -11,10 +18,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm install
+          cache: npm
+      - run: npm ci || npm install
       - run: npm run build
       - run: cp dist/index.html dist/404.html
       - run: touch dist/.nojekyll
+      - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
@@ -22,5 +31,8 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
     steps:
-      - uses: actions/deploy-pages@v4
+      - id: deployment
+        uses: actions/deploy-pages@v4
