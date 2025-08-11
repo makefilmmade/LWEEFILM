@@ -25,13 +25,14 @@ const App = () => (
       <Sonner />
       <HashRouter>
         {/* 첫 진입 인트로 영상 (public/intro/intro.mp4 업로드) */}
-        <IntroGate
+     <IntroGate
   src="intro/intro.mp4"
   poster="intro/poster.jpg"
-  showOnceKey={undefined}   // ← 매번 재생!
+  showOnceKey={undefined}   // 매 새로고침마다 재생
   minShowMs={1200}
   fadeMs={600}
 />
+
 
         <Routes>
           <Route path="/" element={<Index />} />
