@@ -1,7 +1,10 @@
+// src/main.tsx
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-// import "./index.css"; // 쓰고 계시면 유지
+
+// ✅ CSS 반드시 임포트 (Tailwind/글로벌 스타일)
+import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
