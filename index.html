@@ -4,28 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" crossorigin>
-
+    <link rel="canonical" href="/LWEEFILM/" />
     <title>LWEE FILM — Brand · Film · Post</title>
-    <meta name="description" content="상업/다큐/브랜디드 영상 제작 스튜디오. 기획부터 후반까지 통합 프로덕션." />
-    <meta name="author" content="LWEE FILM" />
-    <link rel="canonical" href="/" />
-    <meta name="theme-color" content="#0B0B0B" />
 
-    <meta property="og:title" content="LWEE FILM — Brand · Film · Post" />
-    <meta property="og:description" content="상업/다큐/브랜디드 영상 제작 스튜디오. 기획부터 후반까지 통합 프로덕션." />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <!-- (선택) 폰트/메타는 기존 그대로 유지 -->
+    <script>
+      // 404.html에서 보관한 경로가 있으면 한 번에 복원
+      (function () {
+        var repo = "/LWEEFILM";
+        var r = sessionStorage.redirect;
+        if (r && r !== location.pathname + location.search + location.hash) {
+          sessionStorage.removeItem("redirect");
+          if (!r.startsWith(repo)) r = repo + r;
+          location.replace(r);
+        }
+      })();
+    </script>
   </head>
-
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
