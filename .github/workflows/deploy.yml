@@ -21,7 +21,7 @@ jobs:
       - run: npm ci || npm install
       - run: npm run build
       - run: touch dist/.nojekyll
-      - run: ls -la dist && find dist -maxdepth 2 -type f -print   # ← dist에 index.html 있는지 확인용
+      - run: ls -la dist && find dist -maxdepth 2 -type f -print
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
