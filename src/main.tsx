@@ -1,5 +1,14 @@
+import React from "react";
+import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-// ...
-<BrowserRouter basename={import.meta.env.BASE_URL}>
-  <App />
-</BrowserRouter>
+import App from "./App";              // ← default import (확실히)
+
+import "./index.css";                 // 있으면 유지
+
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
+      <App />
+    </BrowserRouter>
+  </React.StrictMode>
+);
