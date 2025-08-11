@@ -7,8 +7,8 @@ import "./index.css"; // 있으면 유지
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
-      <App />
-    </BrowserRouter>
+    <BrowserRouter basename="/LWEEFILM">
+  <App />
+</BrowserRouter>
   </React.StrictMode>
 );
