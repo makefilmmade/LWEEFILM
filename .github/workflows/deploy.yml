@@ -4,7 +4,6 @@ on:
   push:
     branches: [ main ]
 
-# ⬇⬇⬇ 이 부분이 핵심 (권한 추가)
 permissions:
   contents: read
   pages: write
@@ -33,6 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
