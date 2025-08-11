@@ -26,7 +26,7 @@ export default function IntroGate({
   const start = useRef<number>(Date.now());
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // BASE_URL + URL 인코딩
+  // BASE_URL 적용 + 한글/공백 경로 안전 처리
   const withBase = (p?: string) =>
     !p
       ? ""
@@ -56,6 +56,9 @@ export default function IntroGate({
     document.body.classList.add("overflow-hidden");
 
     const v = videoRef.current!;
+    v.muted = true;
+    (v as any).playsInline = true;
+
     const tryPlay = () => {
       v.play().then(() => setNeedTap(false)).catch(() => setNeedTap(true));
     };
@@ -63,10 +66,6 @@ export default function IntroGate({
     const onCanPlay = () => { if (v.paused) tryPlay(); };
     const onEnded = () => endIntro();
     const onError = () => setErr("영상 로드 실패 (경로/대소문자/코덱 확인)");
-
-    // 초기 세팅
-    v.muted = true;
-    (v as any).playsInline = true;
 
     tryPlay();
 
@@ -139,4 +138,19 @@ export default function IntroGate({
               onClick={() =>
                 videoRef.current?.play().then(()=>setNeedTap(false)).catch(()=>setNeedTap(true))
               }
-              className="rounded-full border border-white/40 px-4 py-2 text-white/90 text
+              className="rounded-full border border-white/40 px-4 py-2 text-white/90 text-sm bg-black/40 backdrop-blur hover:bg-black/60"
+            >
+              Tap to start
+            </button>
+          )}
+          <button
+            onClick={endIntro}
+            className="rounded-full border border-white/40 px-3 py-1 text-white/90 text-sm bg-black/40 backdrop-blur hover:bg-black/60"
+          >
+            Skip
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
