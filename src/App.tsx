@@ -26,12 +26,12 @@ const App = () => (
       <HashRouter>
         {/* 첫 진입 인트로 영상 (public/intro/intro.mp4 업로드) */}
         <IntroGate
-          src="intro/intro.mp4"
-          poster="intro/poster.jpg"
-          showOnceKey="introSeen_v1"
-          minShowMs={1200}
-          fadeMs={600}
-        />
+  src="intro/intro.mp4"
+  poster="intro/poster.jpg"
+  showOnceKey={undefined}   // ← 매번 재생!
+  minShowMs={1200}
+  fadeMs={600}
+/>
 
         <Routes>
           <Route path="/" element={<Index />} />
