@@ -25,13 +25,14 @@ const App = () => (
       <Sonner />
       <HashRouter>
         {/* ✅ 파일명 대문자 I: public/intro/Intro.mp4 */}
-        <IntroGate
-          src="intro/Intro.mp4"
-          poster="intro/poster.jpg"
-          showOnceKey={undefined}   // 매 새로고침마다 재생
-          minShowMs={1200}
-          fadeMs={600}
-        />
+       <IntroGate
+  src="intro/Intro.mp4"   // ← 대문자 I
+  poster="intro/poster.jpg"
+  showOnceKey={undefined} // 매 새로고침마다 재생
+  minShowMs={1200}
+  fadeMs={600}
+/>
+
 
         <Routes>
           <Route path="/" element={<Index />} />
