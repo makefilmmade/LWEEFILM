@@ -1,14 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 
 type Props = {
-  /** public/ 기준 상대경로 또는 절대 URL */
-  src: string;
+  src: string;          // public/ 기준 또는 절대 URL
   poster?: string;
-  /** 같은 브라우저에서 한 번 봤으면 다시 안 보이게 (키 이름) */
-  showOnceKey?: string; // 예: "introSeen_v1"
-  /** 너무 빨리 사라지는 걸 방지 (ms) */
+  showOnceKey?: string; // undefined면 매번 재생
   minShowMs?: number;
-  /** 페이드아웃 시간 (ms) */
   fadeMs?: number;
 };
 
@@ -22,82 +18,139 @@ export default function IntroGate({
   const [hidden, setHidden] = useState(() =>
     showOnceKey ? !!localStorage.getItem(showOnceKey) : false
   );
-  const [fade, setFade] = useState(false);
+  const [fading, setFading] = useState(false);
+  const [needTap, setNeedTap] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  const [resolvedSrc, setResolvedSrc] = useState<string>("");
+
   const start = useRef<number>(Date.now());
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  // BASE_URL 적용 + 한글/공백 경로 안전 처리
+  const withBase = (p?: string) =>
+    !p
+      ? ""
+      : encodeURI(
+          /^(https?:)?\/\//.test(p) || p.startsWith("data:")
+            ? p
+            : `${import.meta.env.BASE_URL}${p.replace(/^\/+/, "")}`
+        );
+
+  const endIntro = () => {
+    const elapsed = Date.now() - start.current;
+    const rest = Math.max(0, minShowMs - elapsed);
+    setTimeout(() => {
+      setFading(true);
+      setTimeout(() => {
+        if (showOnceKey) localStorage.setItem(showOnceKey, "1");
+        setHidden(true);
+        document.documentElement.classList.remove("overflow-hidden");
+        document.body.classList.remove("overflow-hidden");
+      }, fadeMs);
+    }, rest);
+  };
+
   useEffect(() => {
     if (hidden) return;
-
-    // 스크롤 잠금
     document.documentElement.classList.add("overflow-hidden");
     document.body.classList.add("overflow-hidden");
 
-    const v = videoRef.current;
+    const v = videoRef.current!;
+    v.muted = true;
+    (v as any).playsInline = true;
 
-    const endIntro = () => {
-      const elapsed = Date.now() - start.current;
-      const rest = Math.max(0, minShowMs - elapsed);
-      setTimeout(() => {
-        setFade(true);
-        setTimeout(() => {
-          if (showOnceKey) localStorage.setItem(showOnceKey, "1");
-          setHidden(true);
-          document.documentElement.classList.remove("overflow-hidden");
-          document.body.classList.remove("overflow-hidden");
-        }, fadeMs);
-      }, rest);
+    const tryPlay = () => {
+      v.play().then(() => setNeedTap(false)).catch(() => setNeedTap(true));
     };
 
+    const onCanPlay = () => { if (v.paused) tryPlay(); };
     const onEnded = () => endIntro();
-    const onError = () => endIntro();
+    const onError = () => setErr("영상 로드 실패 (경로/대소문자/코덱 확인)");
 
-    v?.addEventListener("ended", onEnded);
-    v?.addEventListener("error", onError);
+    tryPlay();
 
-    // 네트워크/모바일 이슈 대비 타임아웃(10초)
-    const t = setTimeout(endIntro, 10000);
+    v.addEventListener("canplay", onCanPlay);
+    v.addEventListener("ended", onEnded);
+    v.addEventListener("error", onError);
+
+    const t = setTimeout(() => { if (!err) setNeedTap(true); }, 12000);
 
     return () => {
       clearTimeout(t);
-      v?.removeEventListener("ended", onEnded);
-      v?.removeEventListener("error", onError);
+      v.removeEventListener("canplay", onCanPlay);
+      v.removeEventListener("ended", onEnded);
+      v.removeEventListener("error", onError);
       document.documentElement.classList.remove("overflow-hidden");
       document.body.classList.remove("overflow-hidden");
     };
-  }, [hidden, fadeMs, minShowMs, showOnceKey]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hidden, minShowMs, fadeMs]);
+
+  useEffect(() => {
+    setResolvedSrc(withBase(src));
+  }, [src]);
 
   if (hidden) return null;
-
-  const withBase = (p?: string) =>
-    !p
-      ? undefined
-      : /^https?:\/\//.test(p) || p.startsWith("data:")
-      ? p
-      : `${import.meta.env.BASE_URL}${p.replace(/^\/+/, "")}`;
 
   return (
     <div
       className={`fixed inset-0 z-[9999] bg-black transition-opacity ${
-        fade ? "opacity-0 pointer-events-none" : "opacity-100"
+        fading ? "opacity-0 pointer-events-none" : "opacity-100"
       }`}
     >
       <video
         ref={videoRef}
         className="w-full h-full object-cover"
-        src={withBase(src)}
         poster={withBase(poster)}
         autoPlay
         muted
         playsInline
         preload="auto"
-      />
-      <button
-        onClick={() => videoRef.current?.dispatchEvent(new Event("ended"))}
-        className="absolute right-4 bottom-4 rounded-full border border-white/40 px-3 py-1 text-white/90 text-sm bg-black/40 backdrop-blur hover:bg-black/60"
       >
-        Skip
-      </button>
+        {/* iOS/사파리 호환을 위해 source+type 명시 */}
+        <source src={resolvedSrc} type="video/mp4" />
+      </video>
+
+      {/* 안내/버튼/디버그 */}
+      <div className="absolute inset-0 flex items-end justify-between p-4">
+        <div className="text-xs text-white/70 max-w-[70%]">
+          {err ? (
+            <>
+              <div className="mb-1 text-red-300">❌ {err}</div>
+              <div>요청 URL: <code>{resolvedSrc}</code></div>
+              <a
+                className="underline"
+                href={resolvedSrc}
+                target="_blank"
+                rel="noreferrer"
+              >
+                원본 열기(직접 재생 테스트)
+              </a>
+            </>
+          ) : needTap ? (
+            <div>자동재생이 차단되어 있습니다. 우측 버튼을 눌러 시작하세요.</div>
+          ) : null}
+        </div>
+
+        <div className="flex gap-2">
+          {needTap && !err && (
+            <button
+              onClick={() =>
+                videoRef.current?.play().then(()=>setNeedTap(false)).catch(()=>setNeedTap(true))
+              }
+              className="rounded-full border border-white/40 px-4 py-2 text-white/90 text-sm bg-black/40 backdrop-blur hover:bg-black/60"
+            >
+              Tap to start
+            </button>
+          )}
+          <button
+            onClick={endIntro}
+            className="rounded-full border border-white/40 px-3 py-1 text-white/90 text-sm bg-black/40 backdrop-blur hover:bg-black/60"
+          >
+            Skip
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
