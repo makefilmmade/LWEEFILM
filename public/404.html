@@ -1,13 +1,10 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Redirecting…</title>
-    <script>
-      // 404로 들어온 원래 경로를 보관 후 프로젝트 루트로 이동
-      sessionStorage.redirect = location.pathname + location.search + location.hash;
-      location.replace("/LWEEFILM/");
-    </script>
-  </head>
-  <body></body>
-</html>
+<!DOCTYPE html><html><head><meta charset="utf-8"/>
+<meta http-equiv="refresh" content="0; url=/LWEEFILM/" />
+<script>
+  var repo = "/LWEEFILM/";
+  var r = sessionStorage.redirect;
+  if (r && !r.startsWith(repo)) r = repo + r;
+  sessionStorage.removeItem("redirect");
+  location.replace(r || repo);
+</script>
+<title>Redirecting…</title></head><body></body></html>
