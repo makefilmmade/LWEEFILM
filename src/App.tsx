@@ -1,10 +1,9 @@
-// src/App.tsx
 import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
-import { HashRouter, Routes, Route } from "react-router-dom";
 
 import Index from "./pages/Index";
 import About from "./pages/About";
@@ -27,14 +26,15 @@ export default function App() {
         <Toaster />
         <Sonner />
         <HashRouter>
-          {/* 인트로: public//.mp4 업로드 필요 */}
-         <IntroGate
-  src="intro/Intro.mp4"   // public/intro/Intro.mp4
-  poster="intro/poster.jpg"
-  showOnceKey={undefined}
-  minShowMs={1200}
-  fadeMs={600}
-/>
+          {/* 인트로: public/intro/Intro.mp4 필요 */}
+          <IntroGate
+            src="intro/Intro.mp4"
+            poster="intro/poster.jpg"
+            showOnceKey={undefined}   // 새로고침마다 재생
+            minShowMs={1200}
+            fadeMs={600}
+          />
+
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />
