@@ -27,7 +27,7 @@ export default function IntroGate({
   const start = useRef<number>(Date.now());
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // BASE_URL 적용 + 한글/공백 경로 안전 처리
+  // BASE_URL + 한글/공백 경로 안전 처리
   const withBase = (p?: string) =>
     !p
       ? ""
@@ -51,14 +51,13 @@ export default function IntroGate({
     }, rest);
   };
 
-  // 사전 Fetch로 파일 존재/상태 확인 (CORS 동일 출처 OK)
+  // 파일 존재/상태 사전 체크
   useEffect(() => {
     const url = withBase(src);
     setResolvedSrc(url);
     setHttpInfo("(checking…)");
-    // Range 0-0로 매우 가볍게 확인 (206 또는 200 기대)
-    fetch(url, { method: "GET", headers: { Range: "bytes=0-0" } })
-      .then(async (r) => {
+    fetch(url, { headers: { Range: "bytes=0-0" } })
+      .then((r) => {
         setHttpInfo(`HTTP ${r.status} ${r.statusText}`);
         if (!r.ok && r.status !== 206) {
           setErr("영상 로드 실패 (경로/대소문자/권한)");
@@ -134,12 +133,7 @@ export default function IntroGate({
           <div>URL: <code>{resolvedSrc}</code></div>
           <div>Status: {httpInfo}</div>
           {err && <div className="text-red-300">❌ {err}</div>}
-          <a
-            className="underline"
-            href={resolvedSrc}
-            target="_blank"
-            rel="noreferrer"
-          >
+          <a className="underline" href={resolvedSrc} target="_blank" rel="noreferrer">
             원본 열기(직접 재생 테스트)
           </a>
         </div>
