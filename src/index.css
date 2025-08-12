@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+:root { color-scheme: dark; }
+html, body, #root { height: 100%; background: #0b0b0b; }
+
+
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
