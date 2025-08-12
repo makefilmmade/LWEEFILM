@@ -22,6 +22,7 @@ export default function IntroGate({
   const [needTap, setNeedTap] = useState(false);
   const [err, setErr] = useState<string | null>(null);
   const [resolvedSrc, setResolvedSrc] = useState<string>("");
+  const [httpInfo, setHttpInfo] = useState<string>("(checking…)");
 
   const start = useRef<number>(Date.now());
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -50,8 +51,29 @@ export default function IntroGate({
     }, rest);
   };
 
+  // 사전 Fetch로 파일 존재/상태 확인 (CORS 동일 출처 OK)
+  useEffect(() => {
+    const url = withBase(src);
+    setResolvedSrc(url);
+    setHttpInfo("(checking…)");
+    // Range 0-0로 매우 가볍게 확인 (206 또는 200 기대)
+    fetch(url, { method: "GET", headers: { Range: "bytes=0-0" } })
+      .then(async (r) => {
+        setHttpInfo(`HTTP ${r.status} ${r.statusText}`);
+        if (!r.ok && r.status !== 206) {
+          setErr("영상 로드 실패 (경로/대소문자/권한)");
+        }
+      })
+      .catch(() => {
+        setHttpInfo("(fetch error)");
+        setErr("네트워크 오류 또는 경로 문제");
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [src]);
+
   useEffect(() => {
     if (hidden) return;
+
     document.documentElement.classList.add("overflow-hidden");
     document.body.classList.add("overflow-hidden");
 
@@ -65,7 +87,7 @@ export default function IntroGate({
 
     const onCanPlay = () => { if (v.paused) tryPlay(); };
     const onEnded = () => endIntro();
-    const onError = () => setErr("영상 로드 실패 (경로/대소문자/코덱 확인)");
+    const onError = () => setErr("영상 재생 에러(코덱/손상/권한)");
 
     tryPlay();
 
@@ -86,10 +108,6 @@ export default function IntroGate({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hidden, minShowMs, fadeMs]);
 
-  useEffect(() => {
-    setResolvedSrc(withBase(src));
-  }, [src]);
-
   if (hidden) return null;
 
   return (
@@ -107,42 +125,34 @@ export default function IntroGate({
         playsInline
         preload="auto"
       >
-        {/* iOS/사파리 호환을 위해 source+type 명시 */}
         <source src={resolvedSrc} type="video/mp4" />
       </video>
 
-      {/* 안내/버튼/디버그 */}
+      {/* 디버그/가이드 UI */}
       <div className="absolute inset-0 flex items-end justify-between p-4">
-        <div className="text-xs text-white/70 max-w-[70%]">
-          {err ? (
-            <>
-              <div className="mb-1 text-red-300">❌ {err}</div>
-              <div>요청 URL: <code>{resolvedSrc}</code></div>
-              <a
-                className="underline"
-                href={resolvedSrc}
-                target="_blank"
-                rel="noreferrer"
-              >
-                원본 열기(직접 재생 테스트)
-              </a>
-            </>
-          ) : needTap ? (
-            <div>자동재생이 차단되어 있습니다. 우측 버튼을 눌러 시작하세요.</div>
-          ) : null}
+        <div className="text-xs text-white/80 max-w-[70%] space-y-1">
+          <div>URL: <code>{resolvedSrc}</code></div>
+          <div>Status: {httpInfo}</div>
+          {err && <div className="text-red-300">❌ {err}</div>}
+          <a
+            className="underline"
+            href={resolvedSrc}
+            target="_blank"
+            rel="noreferrer"
+          >
+            원본 열기(직접 재생 테스트)
+          </a>
         </div>
 
         <div className="flex gap-2">
-          {needTap && !err && (
-            <button
-              onClick={() =>
-                videoRef.current?.play().then(()=>setNeedTap(false)).catch(()=>setNeedTap(true))
-              }
-              className="rounded-full border border-white/40 px-4 py-2 text-white/90 text-sm bg-black/40 backdrop-blur hover:bg-black/60"
-            >
-              Tap to start
-            </button>
-          )}
+          <button
+            onClick={() =>
+              videoRef.current?.play().then(()=>setNeedTap(false)).catch(()=>setNeedTap(true))
+            }
+            className="rounded-full border border-white/40 px-4 py-2 text-white/90 text-sm bg-black/40 backdrop-blur hover:bg-black/60"
+          >
+            {needTap ? "Tap to start" : "Replay"}
+          </button>
           <button
             onClick={endIntro}
             className="rounded-full border border-white/40 px-3 py-1 text-white/90 text-sm bg-black/40 backdrop-blur hover:bg-black/60"
