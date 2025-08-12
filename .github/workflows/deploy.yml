@@ -18,11 +18,11 @@ jobs:
         with:
           node-version: 20
           cache: npm
-      - run: npm ci || npm install
+      - run: npm ci
       - run: npm run build
-      - run: touch dist/.nojekyll
-      - run: ls -la dist && find dist -maxdepth 2 -type f -print
-      - uses: actions/configure-pages@v5
+      - run: cp dist/index.html dist/404.html && touch dist/.nojekyll
+      # 🔍 디버깅용: dist 내용 찍기 (Intro.mp4 포함 확인)
+      - run: ls -R dist | sed -n '1,400p'
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
